@@ -1,6 +1,6 @@
 <?php
 
-class Des{
+public class Des{
 
 	private $key;
 	private $iv;
