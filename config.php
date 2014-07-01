@@ -13,7 +13,6 @@ class Configuration{
 			"test_path" => $ROOT."/test/",			
 			"modules" => array("des",""),
 
-
 			);
 	}
 }
