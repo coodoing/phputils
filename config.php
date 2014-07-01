@@ -1,6 +1,20 @@
 <?php
 
-define('DIR_SRC',$ROOT."/src/");
-define('DIR_TEST',$ROOT."/test/");
+/*
+	Configuration cls file
+*/
+class Configuration{
 
-define("","");
+	private $config;
+	public function __construct(){
+		$configuration = array(
+			"base_path" => $ROOT,
+			"src_path" => $ROOT."/src/",
+			"test_path" => $ROOT."/test/",			
+			"modules" => array("des",""),
+
+
+			);
+	}
+}
+
