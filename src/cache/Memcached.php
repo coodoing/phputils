@@ -46,7 +46,8 @@ class PU_Memcached extends PU_CacheAbstract {
 
 	public function replace($key, $value, $expire = 30){
 		$this->connect();
-		$this->memc->replace($key,$value,time()+$expire);
+		$expire += time();
+		$this->memc->replace($key,$value,$expire);
 	}
 
 	public function get($key){
@@ -86,6 +87,13 @@ class PU_Memcached extends PU_CacheAbstract {
 
 	public function isConnect(){
 		return $this->conn;
+	}
+
+	public function exist($key){
+		$value = $this->get($key);
+		if(empty($value))
+			return false;
+		return true;
 	}
 
 	public function close(){
