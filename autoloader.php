@@ -1,5 +1,6 @@
 <?php
 
+$ROOT = dirname(__FILE__);
 // autoload function: http://php.net/manual/zh/language.oop5.autoload.php
 function __autoload($className){
 	$base = dirname(__FILE__);
