@@ -57,7 +57,7 @@ class PU_RedisCache extends PU_CacheAbstract{
 	}	
 
 	public function escapeKey($key){
-		return md5($this->keyPrefix.$key);
+		return md5($key);
 	}
 
 	public function multiGet($keys){
