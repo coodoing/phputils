@@ -2,7 +2,11 @@
 
 //require_once($ROOT.'src/cache/CacheAbstract.php');
 
+/*
+	pecl redis / predis
+*/
 class PU_RedisCache extends PU_CacheAbstract{
+
 	private $redis;
 	private $servers;
 	public function __construct(){
