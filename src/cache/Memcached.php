@@ -18,8 +18,7 @@ class PU_Memcached extends PU_CacheAbstract {
 			$this->host = $config['memcached']['host'];
 			$this->port = $config['memcached']['port'];	
 			$this->memc->addServer($this->host,$this->port);		
-		}
-		
+		}		
 	}
 
 	public function connect(){
@@ -32,33 +31,57 @@ class PU_Memcached extends PU_CacheAbstract {
 
 	public function set($key,$value,$expire = 30){
 		$this->connect();
-		$this->meme->set($key,$value,$expire);
+		$this->memc->set($key,$value,time()+$expire);
 	}
 
 	public function setMulti($items,$expire = 30){
-		
+		$this->connect();
+		$this->memc->setMulti($items,time()+$expire);
+	}
+
+	public function add($key, $value, $expire = 30){
+		$this->connect();
+		$this->memc->add($key,$value,time()+$expire);
+	}
+
+	public function replace($key, $value, $expire = 30){
+		$this->connect();
+		$this->memc->replace($key,$value,time()+$expire);
 	}
 
 	public function get($key){
 		$this->connect();
 		$result = $this->meme->get($key);
-		if($result != Memcached::RES_NOTFOUND){
-
-		}	
-		return result;
+		if($result == Memcached::RES_NOTFOUND){
+			return result;
+		}			
 	}
 
 	public function getMulti($keys){
-
+		$this->connect();
+		$tmpResult = $this->memc->getMulti($keys);
+		$result = array();
+		if(is_array($tmpResult)){
+		    foreach ($tmpResult as $key=>$value){
+		        $result[$key] = $value;
+		    }
+		}
+		return $result;
 	}
 
 	public function getAllkeys(){
-		
+		$this->connect();	
+		$this->memc->getAllkeys();
 	}
 
 	public function del($key){
 		$this->connect();
 		$this->meme->del($key);
+	}
+
+	public function flush($timeout = 10){
+		$this->connect();
+		$this->memc->flush($timeout);
 	}
 
 	public function isConnect(){
