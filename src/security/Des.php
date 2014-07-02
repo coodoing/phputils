@@ -1,7 +1,6 @@
 <?php
 
-public class PU_Des{
-
+class PU_Des{
 	private $key;
 	private $iv;
 	private $td;
