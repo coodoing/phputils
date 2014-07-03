@@ -58,10 +58,7 @@ class PU_Memcached extends PU_CacheAbstract {
 
 	public function get($key){
 		$this->connect();
-		$result = $this->memc->get($key);
-		if($result != Memcached::RES_NOTFOUND){
-			return result;
-		}			
+		return $this->memc->get($key);			
 	}
 
 	public function getMulti($keys){
