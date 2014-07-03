@@ -1,9 +1,10 @@
 <?php
 
 include_once("../autoloader.php");
+include_once("../config.php");
 
-assert(class_exists("Memcached") == false );
-assert(function_exists('memcache_connect') == false );
+//assert(class_exists("Memcached") == false );
+//assert(function_exists('memcache_connect') == false );
 
 $memc = new PU_Memcached();
 var_dump($memc);

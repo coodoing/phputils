@@ -1,6 +1,6 @@
 <?php
 
-$configuration = array(
+$config = array(
 	"base_path" => $ROOT,
 	"src_path" => $ROOT."/src/",
 	"test_path" => $ROOT."/test/",			
