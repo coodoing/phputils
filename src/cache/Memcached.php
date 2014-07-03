@@ -10,7 +10,7 @@ class PU_Memcached extends PU_CacheAbstract {
 	private $port;
 	private $conn = false;
 	public function __construct(){		
-		if(!function_exists('memcache_connect') && !class_exists("Memcached")){
+		if(!class_exists("Memcached")){			
 			throw new Exception("Memcache functions not available");
 		}else{			
 			$this->host = $config['memcached']['host'];
