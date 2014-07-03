@@ -17,7 +17,7 @@ $memc->replace('key1', 'This is replace value', 60);
 $val = $memc->get('key1');
 echo "Get key1 value: " . $val . "<br />";
 //
-$memc->delete('key1');
+$memc->del('key1');
 $val = $memc->get('key1');
 echo "Get key1 value: " . $val . "<br />";
 //

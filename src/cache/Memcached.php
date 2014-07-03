@@ -25,7 +25,7 @@ class PU_Memcached extends PU_CacheAbstract {
 	public function connect(){
 		if($this->conn)
 			return;
-		$this->memc = new Memcached();
+		$this->memc = new Memcached;
 		$this->conn = true;
 		$this->memc->addServer($this->host,$this->port);
 	}
@@ -53,7 +53,7 @@ class PU_Memcached extends PU_CacheAbstract {
 
 	public function get($key){
 		$this->connect();
-		$result = $this->meme->get($key);
+		$result = $this->memc->get($key);
 		if($result == Memcached::RES_NOTFOUND){
 			return result;
 		}			
@@ -78,7 +78,7 @@ class PU_Memcached extends PU_CacheAbstract {
 
 	public function del($key){
 		$this->connect();
-		$this->meme->del($key);
+		$this->memc->delete($key);
 	}
 
 	public function flush($timeout = 10){
@@ -99,6 +99,6 @@ class PU_Memcached extends PU_CacheAbstract {
 
 	public function close(){
 		if($this->conn)
-			$this->memc->quit();
+			$this->memc->close();
 	}
 }
