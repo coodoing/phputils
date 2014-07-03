@@ -2,7 +2,7 @@
 
 //require_once($ROOT.'src/cache/CacheAbstract.php');
 //require_once($ROOT.'src/Exception.php');
-//require_once($ROOT.'config.php');
+//require_once('../../config.php');
 
 class PU_Memcached extends PU_CacheAbstract {	
 	private $memc;
@@ -13,8 +13,13 @@ class PU_Memcached extends PU_CacheAbstract {
 		if(!class_exists("Memcached")){			
 			throw new Exception("Memcache functions not available");
 		}else{			
-			$this->host = $config['memcached']['host'];
-			$this->port = $config['memcached']['port'];	
+			if(empty($config)){
+				$this->host = "127.0.0.1";
+				$this->port = "11213";
+			}else{
+				$this->host = $config['memcached']['host'];
+				$this->port = $config['memcached']['port'];			
+			}
 			/*$this->memc = new Memcached();	
 			$this->conn = true;
 			$this->memc->addServer($this->host,$this->port);*/	

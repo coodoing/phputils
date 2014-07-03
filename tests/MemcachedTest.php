@@ -22,9 +22,9 @@ $val = $memc->get('key1');
 echo "Get key1 value: " . $val . "<br />";
 //
 $memc->flush();
-$val2 = $memc->get('key1');
-echo "Get key2 value: ";
-print_r($val2);
+$val1 = $memc->get('key1');
+echo "Get key1 value: ";
+print_r($val1);
 echo "<br />";
  
 $memc->close();
