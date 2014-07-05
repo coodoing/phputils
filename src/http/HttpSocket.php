@@ -1,6 +1,6 @@
 <?php
 
-class PU_HTTPClient(){
+class PU_HTTPSocket(){
     private $url; 
     private $protocolVersion = '1.1';
     private $requestHeaders, $requestBody;    
