@@ -158,7 +158,7 @@ class PU_HttpCurl{
 			$err_msg = curl_error ( $ch_session );
 		} else {
 			curl_close ( $ch_session );
-			$httpResp = ( $response );
+			$httpResp = $this->postProcessHeaders ( $response );
 		}
 		return $httpResp;
 	}
@@ -187,6 +187,8 @@ class PU_HttpCurl{
 		}
 		return false;
 	}
-	
 
+	protected function postProcessHeaders($response){
+		return $response;
+	}
 }
