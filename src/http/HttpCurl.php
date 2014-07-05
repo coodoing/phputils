@@ -115,10 +115,6 @@ class PU_HttpCurl{
 	 * 3 curl_close($ch)
 	*/
 	final private function curl($method, $url, $postargs = array()) {
-	    if(isset($_GET['curl_debug'.CSS_JS_VERSION.'_start']) && $_GET['curl_debug'.CSS_JS_VERSION.'_start'] == 100){
-	        list($usec, $sec) = explode(" ", microtime());
-		    $timedebug1 = ((float)$usec + (float)$sec);	
-	    }
 		// Get the curl ch_session object
 		$ch_session = curl_init ( $url );		
 		foreach ( $this->_curlOptions as $name => $value ) {
