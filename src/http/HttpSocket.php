@@ -126,8 +126,7 @@ class PU_HTTPSocket(){
 
 
     /**
-    * send a request
-    * data sent are in order
+    * send a request as following procedures:
     * a) the command
     * b) the request headers if they are defined
     * c) the request body if defined

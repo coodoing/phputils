@@ -10,7 +10,7 @@ class PU_HttpCurl{
 	const HTTP_METHOD_TRACE = 'TRACE';
 	const HTTP_METHOD_OPTIONS = 'OPTIONS';
 
-	protected $_curlOptions = array (
+	private $_curlOptions = array (
 			CURLOPT_HEADER => 1, 
 			CURLOPT_USERAGENT => "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35", 
 			CURLOPT_TIMEOUT=>'30',
@@ -18,8 +18,8 @@ class PU_HttpCurl{
 			CURLOPT_FOLLOWLOCATION => 0, 
 			CURLOPT_RETURNTRANSFER => true, 
 			CURLOPT_FORBID_REUSE => true );
-	protected $_requestHeaders = array ();
-	protected $_requestCookies = array();	
+	private $_requestHeaders = array ();
+	private $_requestCookies = array();	
 	
 	public function __construct(){
 

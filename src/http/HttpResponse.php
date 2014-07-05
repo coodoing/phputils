@@ -1,7 +1,7 @@
 <?php
 
 class PU_HTTPResponse(){
-	protected static $messages = array (
+	private $messages = array (
         // Informational 1xx
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -55,14 +55,14 @@ class PU_HTTPResponse(){
         509 => 'Bandwidth Limit Exceeded'
     );
 	
-	protected $version;
-	protected $code;//The HTTP response code
-	protected $message;
-	protected $headers = array (); // response headers
-	protected $body; // response body
+	private $version;
+	private $code;//The HTTP response code
+	private $message;
+	private $headers = array (); // response headers
+	private $body; // response body
 	
 	public function __construct($code, array $headers, $body = null, $version = '1.1', $message = null) {
-		if (self::responseCodeAsText ( $code ) === null) {
+		if ($this->prettifyResponseCode ( $code ) === null) {
 			die  ( "{$code} is not a valid HTTP response code" );
 		}
 		
@@ -91,7 +91,7 @@ class PU_HTTPResponse(){
 		if (is_string ( $message )) {
 			$this->message = $message;
 		} else {
-			$this->message = self::responseCodeAsText ( $code );
+			$this->message = $this->prettifyResponseCode ( $code );
 		}
 	}
 	
@@ -130,7 +130,7 @@ class PU_HTTPResponse(){
 		switch (strtolower ( $this->getHeader ( 'transfer-encoding' ) )) {
 			// process chunked body
 			case 'chunked' :
-				$body = self::decodeChunkedBody ( $this->body );
+				$body = $this->decodeChunkedBody ( $this->body );
 				break;
 			default :
 				$body = $this->body;
@@ -141,11 +141,11 @@ class PU_HTTPResponse(){
 		switch (strtolower ( $this->getHeader ( 'content-encoding' ) )) {			
 			// process gzip encoding
 			case 'gzip' :
-				$body = self::decodeGzip ( $body );
+				$body = $this->decodeGzip ( $body );
 				break;			
 			// process deflate encoding
 			case 'deflate' :
-				$body = self::decodeDeflate ( $body );
+				$body = $this->decodeDeflate ( $body );
 				break;			
 			default :
 				break;
@@ -224,8 +224,8 @@ class PU_HTTPResponse(){
 	 * Conforms to HTTP/1.1 as defined in RFC 2616 (except for 'Unknown')
 	 * See http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10 for reference
 	 */
-	public static function responseCodeAsText($code = null, $http11 = true) {
-		$messages = self::$messages;
+	public function prettifyResponseCode($code = null, $http11 = true) {
+		$messages = $this->messages;
 		if (! $http11)
 			$messages [302] = 'Moved Temporarily';
 		
@@ -237,8 +237,47 @@ class PU_HTTPResponse(){
 			return 'Unknown';
 		}
 	}
+		
+	// decode a "chunked" transfer-encoded body and return the decoded text
+	public function decodeChunkedBody($body) {
+		$decBody = '';
+		
+		// If mbstring overloads substr and strlen functions, we have to
+		// override it's internal encoding
+		if (function_exists ( 'mb_internal_encoding' ) && (( int ) ini_get ( 'mbstring.func_overload' )) & 2) {
+			
+			$mbIntEnc = mb_internal_encoding ();
+			mb_internal_encoding ( 'ASCII' );
+		}
+
+		return $body;
+	}
 	
-	public static function extractCode($response_str) {
+	// decode a gzip encoded message (when Content-encoding = gzip)
+	public function decodeGzip($body) {
+		if (! function_exists ( 'gzinflate' )) {
+			die( 'zlib extension is required in order to decode "gzip" encoding' );
+			return false;
+		}
+		
+		return gzinflate ( substr ( $body, 10 ) );
+	}
+	
+	// decode a zlib deflated message (when Content-encoding = deflate)
+	public function decodeDeflate($body) {
+		if (! function_exists ( 'gzuncompress' )) {
+			die( 'zlib extension is required in order to decode "deflate" encoding' );
+			return false;
+		}		
+		$zlibHeader = unpack ( 'n', substr ( $body, 0, 2 ) );
+		if ($zlibHeader [1] % 31 == 0) {
+			return gzuncompress ( $body );
+		} else {
+			return gzinflate ( $body );
+		}
+	}
+
+	public function extractCode($response_str) {
 		preg_match ( "|^HTTP/[\d\.x]+ (\d+)|", $response_str, $m );
 		
 		if (isset ( $m [1] )) {
@@ -248,7 +287,7 @@ class PU_HTTPResponse(){
 		}
 	}
 
-	public static function extractMessage($response_str) {
+	public function extractMessage($response_str) {
 		preg_match ( "|^HTTP/[\d\.x]+ \d+ ([^\r\n]+)|", $response_str, $m );
 		
 		if (isset ( $m [1] )) {
@@ -258,7 +297,7 @@ class PU_HTTPResponse(){
 		}
 	}
 
-	public static function extractVersion($response_str) {
+	public function extractVersion($response_str) {
 		preg_match ( "|^HTTP/([\d\.x]+) \d+|", $response_str, $m );
 		
 		if (isset ( $m [1] )) {
@@ -269,7 +308,7 @@ class PU_HTTPResponse(){
 	}
 	
 	// extract the headers from a response string
-	public static function extractHeaders($response_str) {
+	public function extractHeaders($response_str) {
 		$headers = array ();
 		
 		// First, split body and headers
@@ -316,50 +355,11 @@ class PU_HTTPResponse(){
 		return $headers;
 	}
 
-	public static function extractBody($response_str) {
+	public function extractBody($response_str) {
 		$parts = preg_split ( '|(?:\r?\n){2}|m', $response_str, 2 );
 		if (isset ( $parts [1] )) {
 			return $parts [1];
 		}
 		return '';
 	}
-	
-	// decode a "chunked" transfer-encoded body and return the decoded text
-	public static function decodeChunkedBody($body) {
-		$decBody = '';
-		
-		// If mbstring overloads substr and strlen functions, we have to
-		// override it's internal encoding
-		if (function_exists ( 'mb_internal_encoding' ) && (( int ) ini_get ( 'mbstring.func_overload' )) & 2) {
-			
-			$mbIntEnc = mb_internal_encoding ();
-			mb_internal_encoding ( 'ASCII' );
-		}
-
-		return $body;
-	}
-	
-	// decode a gzip encoded message (when Content-encoding = gzip)
-	public static function decodeGzip($body) {
-		if (! function_exists ( 'gzinflate' )) {
-			die( 'zlib extension is required in order to decode "gzip" encoding' );
-			return false;
-		}
-		
-		return gzinflate ( substr ( $body, 10 ) );
-	}
-	
-	// decode a zlib deflated message (when Content-encoding = deflate)
-	public static function decodeDeflate($body) {
-		if (! function_exists ( 'gzuncompress' )) {
-			die( 'zlib extension is required in order to decode "deflate" encoding' );
-			return false;
-		}		
-		$zlibHeader = unpack ( 'n', substr ( $body, 0, 2 ) );
-		if ($zlibHeader [1] % 31 == 0) {
-			return gzuncompress ( $body );
-		} else {
-			return gzinflate ( $body );
-		}
-	}	
 }
