@@ -33,7 +33,7 @@ class PU_MysqlDB {
 		if(!@mysql_select_db($dbname,$this->link_id)) {
 			$this->halt('Fail to connect');
 		}
-		@mysql_query("set names ".$charset); // 解决mysql中文 乱码问题
+		@mysql_query("set names ".$charset); 
 		/*@mysql_query("set names "."utf8");
 		@mysql_query("set character_set_client=utf8");  
     	@mysql_query("set character_set_results=utf8"); */
