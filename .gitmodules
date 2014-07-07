@@ -1,3 +1,9 @@
 [submodule "hybridauth"]
 	path = hybridauth
 	url = https://github.com/hybridauth/hybridauth.git
+[submodule "oEmbed"]
+	path = oEmbed
+	url = https://github.com/coodoing/oEmbed.git
+[submodule "ftpupload"]
+	path = ftpupload
+	url = https://github.com/coodoing/ftpupload.git
