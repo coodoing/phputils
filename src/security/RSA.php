@@ -2,6 +2,10 @@
 
 class PU_RSA extends PU_SecurityAbstract{
 
+    const LOCAL  = 0x01;
+    const REMOTE = 0x02;
+    const FILE   = 0x04;
+
 	public function __construct(){
 
 	}	
