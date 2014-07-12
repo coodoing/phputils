@@ -28,12 +28,12 @@ class PU_Log{
 		$this->logPath = '/var/logs/';
 	}
 
-	protected function writeLog($key,$type,$msg=''){
+	protected function writeLog($key, $type, $msg=''){
 		if($this->isLog){
 			// identify ::: convenient to separate and analysis
-			$text = $key.":::".$type.":::".date("Y-m-d H:i:s").":::".$msg."\r\n";
-			$file = $this->logPath.$key.'-'.date("Y-m-d");
-			if(is_file($file)){
+			$text = $key . ":::" . $type . ":::" . date("Y-m-d H:i:s") . ":::" . $msg . "\r\n" ;
+			$file = $this->logPath . $key . '-' . date("Y-m-d");
+			if(file_exists($file)){
 				$handler = fopen($file, "a+");				
 			}else{
 				$handler = fopen($file, "w+");
@@ -44,22 +44,22 @@ class PU_Log{
 	}
 
 	public function logBI($key,$msg){
-    	$this->writeLog($key,"logBI",$msg);
+    	$this->writeLog($key, "logBI", $msg);
     }       
 
     public function logError($msg){
-    	$this->writeLog($key,"logError",$msg);
+    	$this->writeLog($key, "logError", $msg);
     }       
 
     public function logWarning($msg){
-    	$this->writeLog($key,"logWarning",$msg);
+    	$this->writeLog($key, "logWarning", $msg);
     }   
 
     public function logInfo($msg){
-    	$this->writeLog($key,"logInfo",$msg);
+    	$this->writeLog($key, "logInfo", $msg);
     }   
 
     public function logDebug($msg){
-    	$this->writeLog($key,"logDebug",$msg);
+    	$this->writeLog($key, "logDebug", $msg);
     }   
 }
