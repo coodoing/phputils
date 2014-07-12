@@ -2,8 +2,8 @@
 
 class PU_Log{
 
-	private $handler;
 	private $isLog;
+	private $logPath;
 
 	const LOG_LEVEL_BI = 0;
     const LOG_LEVEL_ERR = 1;
@@ -16,51 +16,50 @@ class PU_Log{
     const LOG_SPLIT_BY_LEVEL = 2;
     const LOG_SPLIT_BY_TIME_AND_LEVEL = 3;
 
-    public static $logLevelWord = array('0'=>'BI',
-                                        '1'=>'ERROR',
-                                        '2'=>'WARNING',
-                                        '3'=>'INFO',
-                                        '4'=>'DEBUG',
-                                        );
+    public $logLevelWord = array('0'=>'BI',
+                                '1'=>'ERROR',
+                                '2'=>'WARNING',
+                                '3'=>'INFO',
+                                '4'=>'DEBUG',
+                                );
 
 	public function __construct() {
 		$this->isLog = true;
+		$this->logPath = '/var/logs/';
+	}
+
+	protected function writeLog($key,$type,$msg=''){
 		if($this->isLog){
-			$handler = fopen("dblog.txt", "a+");
-			$this->handler=$handler;
+			// identify ::: convenient to separate and analysis
+			$text = $key.":::".$type.":::".date("Y-m-d H:i:s").":::".$msg."\r\n";
+			$file = $this->logPath.$key.'-'.date("Y-m-d");
+			if(is_file($file)){
+				$handler = fopen($file, "a+");				
+			}else{
+				$handler = fopen($file, "w+");
+			}
+			fwrite($handler,$text);
+			fclose($handler);			
 		}
 	}
 
-	protected function writeLog($type,$msg=''){
-		if($this->isLog){
-			$text = $type.":::".date("Y-m-d H:i:s").":::".$msg."\r\n";
-			fwrite($this->handler,$text);
-		}
-	}
-
-	public function __destruct() {
-		if($this->isLog){
-			fclose($this->handler);
-		}
-	}
-
-	public static function logBI($msg){
-    	self::writeLog("logBI",$msg);
+	public function logBI($key,$msg){
+    	$this->writeLog($key,"logBI",$msg);
     }       
 
-    public static function logError($msg){
-    	self::writeLog("logBI",$msg);
+    public function logError($msg){
+    	$this->writeLog($key,"logError",$msg);
     }       
 
-    public static function logWarning($msg){
-    	self::writeLog("logBI",$msg);
+    public function logWarning($msg){
+    	$this->writeLog($key,"logWarning",$msg);
     }   
 
-    public static function logInfo($msg){
-    	self::writeLog("logBI",$msg);
+    public function logInfo($msg){
+    	$this->writeLog($key,"logInfo",$msg);
     }   
 
-    public static function logDebug($msg){
-    	self::writeLog("logBI",$msg);
+    public function logDebug($msg){
+    	$this->writeLog($key,"logDebug",$msg);
     }   
 }
